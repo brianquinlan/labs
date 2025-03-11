@@ -2,8 +2,20 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+abstract interface class Metadata {
+  bool get isFile;
+  bool get isDirectory;
+  bool get isLink;
+  bool get isPipe;
+  bool get isCharacter;
+}
+
 /// An abstract representation of a file system.
 base class FileSystem {
+  Metadata metadata(String path) {
+    throw UnsupportedError('metadata');
+  }
+
   /// Renames, and possibly moves a file system object from one path to another.
   ///
   /// If `newPath` is a relative path, it is resolved against the current
