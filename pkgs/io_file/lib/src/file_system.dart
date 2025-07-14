@@ -146,6 +146,11 @@ abstract class FileSystem {
   /// If the directory already exists, then `PathExistsException` is thrown.
   ///
   /// If the parent path does not exist, then `PathNotFoundException` is thrown.
+  ///
+  /// If `path` contains a symbolic link:
+  /// - On POSIX, if the symbolic link is broken, then `PathNotFoundException`
+  ///   is thrown.
+  /// - On Windows, the call will succeed.
   void createDirectory(String path);
 
   /// Creates a temporary directory and returns its path.
@@ -164,6 +169,9 @@ abstract class FileSystem {
   /// any directory navigation characters then they will be used. For example,
   /// a `prefix` of `'../foo'` will create a sibling directory to the parent
   /// directory.
+  ///
+  /// On POSIX, if the directory name would be too long, then
+  /// `PathNotFoundException` is thrown.
   ///
   /// TODO(brianquinlan): Write to a file in the created temporary directory
   /// when that is supported.
@@ -216,6 +224,9 @@ abstract class FileSystem {
   /// - On Windows, if `path` is a symbolic link to a directory then the
   ///   symbolic link is deleted. Otherwise, a `FileSystemException` is thrown.
   /// - On POSIX, a `FileSystemException` is thrown.
+  ///
+  /// On Windows, if the directory is read-only, then this method will fail with
+  /// a `FileSystemException`.
   void removeDirectory(String path);
 
   /// Deletes the directory at the given path and its contents.
@@ -236,6 +247,14 @@ abstract class FileSystem {
   /// On some platforms, a rename operation cannot move a file between
   /// different file systems. If that is the case, instead copy the file to the
   /// new location and then remove the original.
+  ///
+  /// If `newPath` is a symbolic link, then the symbolic link is overwritten,
+  /// not its target.
+  ///
+  /// If `oldPath` and `newPath` are on different filesystems:
+  /// - On POSIX, a `PathException` is thrown.
+  /// - On Windows, the file is copied to the new filesystem and the original
+  ///   file is removed.
   ///
   // If `newPath` identifies an existing file or link, that entity is removed
   // first. If `newPath` identifies an existing directory, the operation
@@ -272,6 +291,8 @@ abstract class FileSystem {
   /// - On Windows, the target of the symlink is created, using `data` as its
   ///   contents.
   /// - On POSIX, [writeAsBytes] throws `PathExistsException`.
+  ///
+  /// If the file is read-only, then `PathAccessException` is thrown.
   void writeAsBytes(
     String path,
     Uint8List data, [
@@ -289,6 +310,8 @@ abstract class FileSystem {
   /// If `lineTerminator` is provided, then it must be one of `'\n'` or
   /// `'\r\n'`. If `lineTerminator` is not provided then the platform line
   /// ending is used, i.e. `'\r\n'` on Windows and `'\n'` everwhere else.
+  ///
+  /// If the file is read-only, then `PathAccessException` is thrown.
   void writeAsString(
     String path,
     String contents, [
