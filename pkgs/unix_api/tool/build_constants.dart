@@ -25,9 +25,9 @@ const _cHeaderTemplate = '''
 // A sentinal indicating that a constant is not defined on the current platform.
 //
 // It is a random sequence of 64 bits and used by `constants.g.dart` to
-// determine whether a value returned by `libc_shim_get_(constant)` is the
+// determine whether a value returned by `misc_get_(constant)` is the
 // actual platform constant or is undefined.
-#define libc_shim_UNDEFINED 5635263260456932693
+#define misc_UNDEFINED 5635263260456932693
 ''';
 
 const _dartTemplate = '''
@@ -41,12 +41,12 @@ import 'constant_bindings.g.dart';
 
 void addConstantToCSource(String constant, StringBuffer b) {
   b.write('''
-int64_t libc_shim_get_$constant(void) {
+int64_t misc_get_$constant(void) {
 #ifdef $constant
-  assert($constant != libc_shim_UNDEFINED);
+  assert($constant != misc_UNDEFINED);
   return $constant;
 #endif
-  return libc_shim_UNDEFINED;
+  return misc_UNDEFINED;
 }
 ''');
 }
@@ -54,7 +54,7 @@ int64_t libc_shim_get_$constant(void) {
 void addConstantToCHeader(String constant, StringBuffer b) {
   b.write('''
 __attribute__((visibility("default"))) __attribute__((used))
-int64_t libc_shim_get_$constant(void);
+int64_t misc_get_$constant(void);
 ''');
 }
 
@@ -62,7 +62,7 @@ void addConstantToDart(String constant, StringBuffer b) {
   b.writeln('''
 int get $constant {
   final v = get_$constant();
-  if (v == libc_shim_UNDEFINED) {
+  if (v == misc_UNDEFINED) {
     throw UnsupportedError('$constant');
   } else {
     return v;
@@ -71,18 +71,18 @@ int get $constant {
 ''');
 }
 
-/// Generates Dart and C source from "constants.yaml"
+/// Generates Dart and C source from "generated-constants.yaml"
 ///
-/// Generates the following files based on "constants.yaml":
+/// Generates the following files based on "generated-constants.yaml":
 /// o lib/src/constants.g.dart
 /// o src/constants.g.c
 /// o src/constants.g.h
 ///
 /// After `build_constants.dart` completes, run:
-/// `dart run ffigen --config constants-ffigen.yaml`
+/// `dart run ffigen --config generated-constants-ffigen.yaml`
 void main() {
   final headerToConstants =
-      (loadYaml(File('constants.yaml').readAsStringSync()) as Map)
+      (loadYaml(File('generated-constants.yaml').readAsStringSync()) as Map)
           .cast<String, Object>();
 
   final cSourceBuffer = StringBuffer(_cSourceTemplate);

@@ -32,43 +32,43 @@
 // fields. In `struct stat`, the only requirement for the `dev_t` is that it
 // be integral; there is no requirement on size or signedness.
 //
-// `libc_shim.h` provides an interface that, when processed by `ffigen`, will
+// `misc.h` provides an interface that, when processed by `ffigen`, will
 // generate the same bindings on all platforms and architectures.
 #include <stdint.h>
 
-#define LIBC_SHIM_EXPORT                                                       \
+#define MISC_EXPORT                                                       \
   __attribute__((visibility("default"))) __attribute__((used))
 
 // <dirent.h>
 
-struct libc_shim_dirent {
+struct misc_dirent {
   int64_t d_ino;     // POSIX
   uint8_t d_type;    // Linux, macOS/iOS
   char d_name[1025]; // POSIX; __DARWIN_MAXNAMLEN = 1024
 };
 
 typedef struct {
-  struct libc_shim_dirent libc_shim_dirent;
+  struct misc_dirent misc_dirent;
   void *_dir;
-} libc_shim_DIR;
+} misc_DIR;
 
-// Returns `libc_shim_dirent.d_name`.
+// Returns `misc_dirent.d_name`.
 //
-// TODO(brianquinlan): Remove `libc_shim_d_name_ptr` when there is a fix for:
+// TODO(brianquinlan): Remove `misc_d_name_ptr` when there is a fix for:
 // https://github.com/dart-lang/sdk/issues/41237
-LIBC_SHIM_EXPORT char *libc_shim_d_name_ptr(struct libc_shim_dirent *d);
-LIBC_SHIM_EXPORT int libc_shim_closedir(libc_shim_DIR *d, int *err);
-LIBC_SHIM_EXPORT libc_shim_DIR *libc_shim_fdopendir(int fd, int *err);
-LIBC_SHIM_EXPORT libc_shim_DIR *libc_shim_opendir(const char *path, int *err);
-LIBC_SHIM_EXPORT struct libc_shim_dirent *libc_shim_readdir(libc_shim_DIR *d, int *err);
+MISC_EXPORT char *misc_d_name_ptr(struct misc_dirent *d);
+MISC_EXPORT int misc_closedir(misc_DIR *d, int *err);
+MISC_EXPORT misc_DIR *misc_fdopendir(int fd, int *err);
+MISC_EXPORT misc_DIR *misc_opendir(const char *path, int *err);
+MISC_EXPORT struct misc_dirent *misc_readdir(misc_DIR *d, int *err);
 
 // <sys/stat.h>
-struct libc_shim_timespec {
+struct misc_timespec {
   int64_t tv_sec;
   int64_t tv_nsec;
 };
 
-struct libc_shim_Stat {
+struct misc_Stat {
   int64_t st_dev;
   int64_t st_ino;
   int64_t st_mode;
@@ -76,20 +76,20 @@ struct libc_shim_Stat {
   int64_t std_uid;
   int64_t st_size;
 
-  struct libc_shim_timespec st_atim;
-  struct libc_shim_timespec st_mtim;
-  struct libc_shim_timespec st_ctim;
+  struct misc_timespec st_atim;
+  struct misc_timespec st_mtim;
+  struct misc_timespec st_ctim;
   // Only valid on macOS/iOS
-  struct libc_shim_timespec st_btime;
+  struct misc_timespec st_btime;
 
   // Only valid on macOS/iOS
   int64_t st_flags;
 };
 
-LIBC_SHIM_EXPORT int libc_shim_stat(const char *path,
-                                    struct libc_shim_Stat *buf, int *err);
-LIBC_SHIM_EXPORT int libc_shim_lstat(const char *path,
-                                     struct libc_shim_Stat *buf, int *err);
-LIBC_SHIM_EXPORT int libc_shim_fstat(int fd, struct libc_shim_Stat *buf, int *err);
-LIBC_SHIM_EXPORT int libc_shim_fstatat(int fd, char *path,
-                                       struct libc_shim_Stat *buf, int flag, int *err);
+MISC_EXPORT int misc_stat(const char *path,
+                                    struct misc_Stat *buf, int *err);
+MISC_EXPORT int misc_lstat(const char *path,
+                                     struct misc_Stat *buf, int *err);
+MISC_EXPORT int misc_fstat(int fd, struct misc_Stat *buf, int *err);
+MISC_EXPORT int misc_fstatat(int fd, char *path,
+                                       struct misc_Stat *buf, int flag, int *err);

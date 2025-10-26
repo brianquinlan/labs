@@ -25,24 +25,24 @@ void main() async {
   build_constants.main();
   build_functions.main();
 
-  await ffigen.main(['--no-format', '-v', 'severe', '--config', 'ffigen.yaml']);
+  await ffigen.main(['--no-format', '-v', 'severe', '--config', 'misc-ffigen.yaml']);
   await ffigen.main([
     '--no-format',
     '-v',
     'severe',
     '--config',
-    'constants-ffigen.yaml',
+    'generated-constants-ffigen.yaml',
   ]);
   await ffigen.main([
     '--no-format',
     '-v',
     'severe',
     '--config',
-    'functions-ffigen.yaml',
+    'generated-functions-ffigen.yaml',
   ]);
   _formatFile('lib/src/constant_bindings.g.dart');
   _formatFile('lib/src/constants.g.dart');
   _formatFile('lib/src/function_bindings.g.dart');
   _formatFile('lib/src/functions.g.dart');
-  _formatFile('lib/src/libc_bindings.g.dart');
+  _formatFile('lib/src/misc_bindings.g.dart');
 }

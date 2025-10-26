@@ -6,7 +6,7 @@ import 'dart:ffi';
 
 import 'src/errno.dart';
 
-export 'src/bespoke.dart';
+export 'src/functions.dart';
 export 'src/constants.g.dart';
 export 'src/functions.g.dart';
 

@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-#include "libc_shim.h"
+#include "misc.h"
 
 #include <assert.h>
 #include <dirent.h>
@@ -16,9 +16,9 @@
 
 // <dirent.h>
 
-char *libc_shim_d_name_ptr(struct libc_shim_dirent *d) { return d->d_name; }
+char *misc_d_name_ptr(struct misc_dirent *d) { return d->d_name; }
 
-int libc_shim_closedir(libc_shim_DIR *d, int *err) {
+int misc_closedir(misc_DIR *d, int *err) {
   errno = *err;
   int r = closedir(d->_dir);
   *err = errno;
@@ -26,31 +26,31 @@ int libc_shim_closedir(libc_shim_DIR *d, int *err) {
   return r;
 }
 
-libc_shim_DIR *libc_shim_fdopendir(int fd, int *err) {
+misc_DIR *misc_fdopendir(int fd, int *err) {
   errno = *err;
   DIR *d = fdopendir(fd);
   *err = errno;
   if (d == NULL) {
     return NULL;
   }
-  libc_shim_DIR *myd = malloc(sizeof(libc_shim_DIR));
+  misc_DIR *myd = malloc(sizeof(misc_DIR));
   myd->_dir = d;
   return myd;
 }
 
-libc_shim_DIR *libc_shim_opendir(const char *path, int *err) {
+misc_DIR *misc_opendir(const char *path, int *err) {
   errno = *err;
   DIR *d = opendir(path);
   *err = errno;
   if (d == NULL) {
     return NULL;
   }
-  libc_shim_DIR *myd = malloc(sizeof(libc_shim_DIR));
+  misc_DIR *myd = malloc(sizeof(misc_DIR));
   myd->_dir = d;
   return myd;
 }
 
-struct libc_shim_dirent *libc_shim_readdir(libc_shim_DIR *myd, int *err) {
+struct misc_dirent *misc_readdir(misc_DIR *myd, int *err) {
   errno = *err;
   struct dirent *d = readdir(myd->_dir);
   *err = errno;
@@ -58,18 +58,18 @@ struct libc_shim_dirent *libc_shim_readdir(libc_shim_DIR *myd, int *err) {
     return NULL;
   }
 
-  myd->libc_shim_dirent.d_ino = d->d_ino;
-  myd->libc_shim_dirent.d_type = d->d_type;
-  assert(strlen(myd->libc_shim_dirent.d_name) <
-         sizeof(myd->libc_shim_dirent.d_name));
-  strncpy(myd->libc_shim_dirent.d_name, d->d_name,
-          sizeof(myd->libc_shim_dirent.d_name));
-  return &(myd->libc_shim_dirent);
+  myd->misc_dirent.d_ino = d->d_ino;
+  myd->misc_dirent.d_type = d->d_type;
+  assert(strlen(myd->misc_dirent.d_name) <
+         sizeof(myd->misc_dirent.d_name));
+  strncpy(myd->misc_dirent.d_name, d->d_name,
+          sizeof(myd->misc_dirent.d_name));
+  return &(myd->misc_dirent);
 }
 
 // <sys/stat.h>
 
-static void _fill(struct libc_shim_Stat *buf, struct stat *s) {
+static void _fill(struct misc_Stat *buf, struct stat *s) {
   buf->st_dev = s->st_dev;
   buf->st_ino = s->st_ino;
   buf->st_mode = s->st_mode;
@@ -104,7 +104,7 @@ static void _fill(struct libc_shim_Stat *buf, struct stat *s) {
 #endif
 }
 
-int libc_shim_stat(const char *path, struct libc_shim_Stat *buf, int *err) {
+int misc_stat(const char *path, struct misc_Stat *buf, int *err) {
   struct stat s;
   errno = *err;
   int r = stat(path, &s);
@@ -115,7 +115,7 @@ int libc_shim_stat(const char *path, struct libc_shim_Stat *buf, int *err) {
   return r;
 }
 
-int libc_shim_lstat(const char *path, struct libc_shim_Stat *buf, int *err) {
+int misc_lstat(const char *path, struct misc_Stat *buf, int *err) {
   struct stat s;
   errno = *err;
   int r = lstat(path, &s);
@@ -126,7 +126,7 @@ int libc_shim_lstat(const char *path, struct libc_shim_Stat *buf, int *err) {
   return r;
 }
 
-int libc_shim_fstat(int fd, struct libc_shim_Stat *buf, int *err) {
+int misc_fstat(int fd, struct misc_Stat *buf, int *err) {
   struct stat s;
   errno = *err;
   int r = fstat(fd, &s);
@@ -137,7 +137,7 @@ int libc_shim_fstat(int fd, struct libc_shim_Stat *buf, int *err) {
   return r;
 }
 
-int libc_shim_fstatat(int fd, char *path, struct libc_shim_Stat *buf,
+int misc_fstatat(int fd, char *path, struct misc_Stat *buf,
                       int flag, int *err) {
   struct stat s;
   errno = *err;

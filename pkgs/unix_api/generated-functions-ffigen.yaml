@@ -1,4 +1,4 @@
-# Run with `dart run ffigen --config ffigen.yaml`.
+# Run with `dart run ffigen --config generated-functions-ffigen.yaml`.
 name: NativeAddBindings
 description: |
   Bindings for `src/functions.g.h`.

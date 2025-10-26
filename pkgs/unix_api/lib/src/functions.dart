@@ -5,14 +5,14 @@
 import 'dart:ffi' as ffi;
 
 import 'errno.dart';
-import 'libc_bindings.g.dart';
-export 'libc_bindings.g.dart' show DIR, dirent, Stat, timespec;
+import 'misc_bindings.g.dart';
+export 'misc_bindings.g.dart' show DIR, dirent, Stat, timespec;
 
 /// Gets metadata for a file.
 ///
 /// See the [POSIX specification for `stat`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/stat.html).
 int stat(ffi.Pointer<ffi.Char> path, ffi.Pointer<Stat> buf) =>
-    libc_shim_stat(path, buf, errnoPtr);
+    misc_stat(path, buf, errnoPtr);
 
 /// Gets metadata for a file.
 ///
@@ -20,12 +20,12 @@ int stat(ffi.Pointer<ffi.Char> path, ffi.Pointer<Stat> buf) =>
 ///
 /// See the [POSIX specification for `lstat`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/stat.html).
 int lstat(ffi.Pointer<ffi.Char> path, ffi.Pointer<Stat> buf) =>
-    libc_shim_lstat(path, buf, errnoPtr);
+    misc_lstat(path, buf, errnoPtr);
 
 /// Gets metadata for a file descriptor.
 ///
 /// See the [POSIX specification for `fstat`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/stat.html).
-int fstat(int fd, ffi.Pointer<Stat> buf) => libc_shim_fstat(fd, buf, errnoPtr);
+int fstat(int fd, ffi.Pointer<Stat> buf) => misc_fstat(fd, buf, errnoPtr);
 
 /// Gets metadata for a file with its behavior controlled by a flag.
 ///
@@ -35,33 +35,33 @@ int fstatat(
   ffi.Pointer<ffi.Char> path,
   ffi.Pointer<Stat> buf,
   int flag,
-) => libc_shim_fstatat(fd, path, buf, flag, errnoPtr);
+) => misc_fstatat(fd, path, buf, flag, errnoPtr);
 
 /// Closes a directory stream.
 ///
 /// See the [POSIX specification for `closedir`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/closedir.html).
-int closedir(ffi.Pointer<DIR> d) => libc_shim_closedir(d, errnoPtr);
+int closedir(ffi.Pointer<DIR> d) => misc_closedir(d, errnoPtr);
 
 /// Opens a directory using a file descriptor.
 ///
 /// See the [POSIX specification for `fdopendir`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fdopendir.html).
-ffi.Pointer<DIR> fdopendir(int fd) => libc_shim_fdopendir(fd, errnoPtr);
+ffi.Pointer<DIR> fdopendir(int fd) => misc_fdopendir(fd, errnoPtr);
 
 /// Opens a directory.
 ///
 /// See the [POSIX specification for `fdopendir`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/opendir.html).
 ffi.Pointer<DIR> opendir(ffi.Pointer<ffi.Char> path) =>
-    libc_shim_opendir(path, errnoPtr);
+    misc_opendir(path, errnoPtr);
 
 /// Reads a directory.
 ///
 /// See the [POSIX specification for `readdir`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/readdir.html).
 ffi.Pointer<dirent> readdir(ffi.Pointer<DIR> d) =>
-    libc_shim_readdir(d, errnoPtr);
+    misc_readdir(d, errnoPtr);
 
 extension DirentPtrExtensions on ffi.Pointer<dirent> {
   /// The `d_name` member of a `dirent` `struct`.
   ///
   /// Need because of https://github.com/dart-lang/sdk/issues/41237.
-  ffi.Pointer<ffi.Char> get d_name_ptr => libc_shim_d_name_ptr(this);
+  ffi.Pointer<ffi.Char> get d_name_ptr => misc_d_name_ptr(this);
 }
