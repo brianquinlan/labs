@@ -79,10 +79,10 @@ int get $constant {
 /// o src/constants.g.h
 ///
 /// After `build_constants.dart` completes, run:
-/// `dart run ffigen --config constants-ffigen.yaml`
+/// `dart run ffigen --config generated-constants-ffigen.yaml`
 void main() {
   final headerToConstants =
-      (loadYaml(File('constants.yaml').readAsStringSync()) as Map)
+      (loadYaml(File('generated-constants.yaml').readAsStringSync()) as Map)
           .cast<String, Object>();
 
   final cSourceBuffer = StringBuffer(_cSourceTemplate);

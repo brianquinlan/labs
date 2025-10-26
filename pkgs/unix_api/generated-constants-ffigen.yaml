@@ -1,24 +1,25 @@
-# Run with `dart run ffigen --config ffigen.yaml`.
+# Run with `dart run ffigen --config generated-constants-ffigen.yaml`.
 name: NativeAddBindings
 description: |
-  Bindings for `src/libc_shim.h`.
+  Bindings for `constants.g.h`.
 
   Regenerate bindings with `dart run tool/generate.dart`.
-output: 'lib/src/libc_bindings.g.dart'
+output: 'lib/src/constant_bindings.g.dart'
 headers:
   entry-points:
-    - 'src/libc_shim.h'
+    - 'src/constants.g.h'
 
   include-directives:
-    - 'src/libc_shim.h'
-preamble: |
-  // ignore_for_file: type=lint, unused_field
+    - 'src/constants.g.h'
 comments:
   style: any
   length: full
 ffi-native:
   asset-id: package:unix_api/libc_shim
 structs:
+  rename:
+    'libc_shim_(.*)': '$1'
+functions:
   rename:
     'libc_shim_(.*)': '$1'
 typedefs:

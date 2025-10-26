@@ -135,7 +135,7 @@ String buildDartFunction(CFunction function) {
 /// Run as part of `generate.dart`.
 void main() {
   final headerToConstants =
-      (loadYaml(File('functions.yaml').readAsStringSync()) as Map)
+      (loadYaml(File('generated-functions.yaml').readAsStringSync()) as Map)
           .cast<String, Object>();
 
   final cSourceBuffer = StringBuffer(_cSourceTemplate);
@@ -160,7 +160,7 @@ void main() {
       final typeList = args.split(RegExp(r'\s*,\s*'));
 
       final cFunction = CFunction.fromDescription(
-        prefix: 'libc_shim_',
+        prefix: '',
         name: functionName,
         unixReturnType: returnType,
         unixArgumentTypes: typeList,

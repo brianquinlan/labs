@@ -18,7 +18,7 @@ void main(List<String> args) async {
         if ([OS.linux].contains(input.config.code.targetOS)) 'crypt',
       ],
       sources: [
-        'src/libc_shim.c',
+        'src/misc.c',
         'src/constants.g.c',
         'src/functions.g.c',
         'src/handwritten_constants.c',
