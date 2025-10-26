@@ -5,8 +5,8 @@
 import 'dart:ffi' as ffi;
 
 import 'errno.dart';
-import 'libc_bindings.g.dart';
-export 'libc_bindings.g.dart' show DIR, dirent, Stat, timespec;
+import 'misc_bindings.g.dart';
+export 'misc_bindings.g.dart' show DIR, dirent, Stat, timespec;
 
 /// Gets metadata for a file.
 ///

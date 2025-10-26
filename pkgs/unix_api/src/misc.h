@@ -93,3 +93,9 @@ LIBC_SHIM_EXPORT int libc_shim_lstat(const char *path,
 LIBC_SHIM_EXPORT int libc_shim_fstat(int fd, struct libc_shim_Stat *buf, int *err);
 LIBC_SHIM_EXPORT int libc_shim_fstatat(int fd, char *path,
                                        struct libc_shim_Stat *buf, int flag, int *err);
+// Copyright (c) 2025, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
+__attribute__((visibility("default"))) __attribute__((used))
+void* libc_shim_get_MAP_FAILED(void);
